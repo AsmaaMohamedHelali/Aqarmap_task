@@ -13,12 +13,14 @@ public class SectionsResponse implements Parcelable {
     private List<Section> sections = null;
 
     protected SectionsResponse(Parcel in) {
-//        this.sections = in.readL;
+        sections = new ArrayList<Section>();
+        in.readList(sections,null);
 
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeList(sections);
     }
 
     @Override
