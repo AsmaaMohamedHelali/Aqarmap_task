@@ -9,7 +9,7 @@ import retrofit2.http.POST;
 public interface MyTaskAPI {
 
 //
-//    @POST(Constants.apiURL + "/oauth/v2/token")
+//    @POST(Constants.apiURL + "/section.json")
 //    Call<GetTokenResponse> refreshToken(@Body GetTokenRequest getTokenRequest);
 
 
