@@ -1,5 +1,7 @@
 package com.example.android.aqarmaptask.activities;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -61,8 +63,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        radioGroupListeners();
         loadingProgressBar.setVisibility(View.VISIBLE);
         checkNetwork();
+    }
+    private void radioGroupListeners(){
+        rgSearch.setOnClickedButtonListener(new RadioRealButtonGroup.OnClickedButtonListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+            @Override
+            public void onClickedButton(RadioRealButton button, int position) {
+                Toast.makeText(MainActivity.this, "Clicked! Position: " + button.getLabelFor(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+// onPositionChanged listener detects if there is any change in position
+        rgSearch.setOnPositionChangedListener(new RadioRealButtonGroup.OnPositionChangedListener() {
+
+            @Override
+            public void onPositionChanged(RadioRealButton button, int currentPosition, int lastPosition) {
+                Toast.makeText(MainActivity.this, "Position Changed! Position: " + currentPosition, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void checkNetwork() {
@@ -105,19 +126,26 @@ public class MainActivity extends AppCompatActivity {
                 ).observeOn(AndroidSchedulers.mainThread()).subscribe(this::handleResults, this::handleError);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void handleResults(MergedSearchListsResponses mergedSearchListsResponses) {
         loadingProgressBar.setVisibility(View.GONE);
         if (mergedSearchListsResponses.getSectionsResponse() != null) {
-            Toast.makeText(this, "result successfully isa", Toast.LENGTH_SHORT).show();
+            if(mergedSearchListsResponses.getSectionsResponse().getSections().size()>=2) {
+                rbRent.setText(mergedSearchListsResponses.getSectionsResponse().getSections().get(0).getTitle());
+                rbRent.setLabelFor(mergedSearchListsResponses.getSectionsResponse().getSections().get(0).getId());
+                rbSale.setText(mergedSearchListsResponses.getSectionsResponse().getSections().get(1).getTitle());
+                rbSale.setLabelFor(mergedSearchListsResponses.getSectionsResponse().getSections().get(1).getId());
+            }
         } else {
             Toast.makeText(this, "errorrrrrrrrrrrr", Toast.LENGTH_SHORT).show();
         }
     }
 
+
     private void handleError(Throwable t) {
         loadingProgressBar.setVisibility(View.GONE);
         Log.e("Observer", "" + t.toString());
-        Toast.makeText(this, "ERROR IN GETTING COUPONS",
+        Toast.makeText(this, "ERROR IN GETTING RESPONSE",
                 Toast.LENGTH_LONG).show();
     }
 

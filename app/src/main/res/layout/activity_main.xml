@@ -27,7 +27,7 @@
                 app:rrbg_dividerColor="@color/black"
                 app:rrbg_dividerSize="1dp"
                 app:rrbg_radius="10dp"
-                app:rrbg_selectorColor="@color/red_700"
+                app:rrbg_selectorColor="@color/colorPrimary"
                 app:rrbg_selectorSize="6dp">
 
                 <co.ceryle.radiorealbutton.RadioRealButton
@@ -92,6 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:text="@string/search"
+            android:background="@color/colorPrimary"
             android:textColor="@android:color/white"
             android:textSize="20sp" />
 
