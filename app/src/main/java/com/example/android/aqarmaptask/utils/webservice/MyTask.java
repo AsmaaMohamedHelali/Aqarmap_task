@@ -44,7 +44,7 @@ public class MyTask {
         return instance;
     }
 
-    public MyTaskAPI getWaterRestService() {
+    public MyTaskAPI getMyAppService() {
         return apiService;
     }
 }
