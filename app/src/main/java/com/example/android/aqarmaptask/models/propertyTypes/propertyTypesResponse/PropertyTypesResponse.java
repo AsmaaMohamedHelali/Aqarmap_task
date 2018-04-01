@@ -9,10 +9,10 @@ import java.util.List;
 
 public class PropertyTypesResponse implements Parcelable {
 
-    private List<PropertyType> propertyTypes = null;
+    private List<PropertyType> property_types = null;
 
     protected PropertyTypesResponse(Parcel in) {
-        propertyTypes = in.createTypedArrayList(PropertyType.CREATOR);
+        property_types = in.createTypedArrayList(PropertyType.CREATOR);
     }
 
     public static final Creator<PropertyTypesResponse> CREATOR = new Creator<PropertyTypesResponse>() {
@@ -28,8 +28,8 @@ public class PropertyTypesResponse implements Parcelable {
     };
 
     public List<PropertyType> getPropertyTypes() {
-        if (!(propertyTypes == null))
-            return propertyTypes;
+        if (!(property_types == null))
+            return property_types;
         else
             return new ArrayList<PropertyType>() ;
     }
@@ -42,6 +42,6 @@ public class PropertyTypesResponse implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeTypedList(propertyTypes);
+        parcel.writeTypedList(property_types);
     }
 }

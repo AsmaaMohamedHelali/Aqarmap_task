@@ -10,11 +10,11 @@ import java.util.List;
 
 public class PricesResponse implements Parcelable {
 
-    private List<PriceFilter> priceFilters = null;
+    private List<PriceFilter> price_filters = null;
 
     protected PricesResponse(Parcel in) {
-        priceFilters=new ArrayList<PriceFilter>();
-        in.readList(priceFilters,null);
+        price_filters=new ArrayList<PriceFilter>();
+        in.readList(price_filters,null);
 
     }
 
@@ -31,8 +31,8 @@ public class PricesResponse implements Parcelable {
     };
 
     public List<PriceFilter> getPriceFilters() {
-        if (!(priceFilters == null))
-            return priceFilters;
+        if (!(price_filters == null))
+            return price_filters;
         else
             return new ArrayList<PriceFilter>() ;
     }
@@ -45,6 +45,6 @@ public class PricesResponse implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeList(priceFilters);
+        parcel.writeList(price_filters);
     }
 }
