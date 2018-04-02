@@ -6,4 +6,5 @@
     <string name="sectionError">choose one section</string>
     <string name="propertyTypeError">choose one type</string>
     <string name="priceError">minimum price should be lower than maximum price</string>
+    <string name="title_activity_search_result">Results</string>
 </resources>

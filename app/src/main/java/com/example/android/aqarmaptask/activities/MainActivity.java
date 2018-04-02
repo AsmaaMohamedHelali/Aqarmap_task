@@ -1,5 +1,6 @@
 package com.example.android.aqarmaptask.activities;
 
+import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.widget.ContentLoadingProgressBar;
@@ -23,7 +24,6 @@ import com.example.android.aqarmaptask.models.prices.pricesResponse.PriceFilter;
 import com.example.android.aqarmaptask.models.prices.pricesResponse.PricesResponse;
 import com.example.android.aqarmaptask.models.propertyTypes.propertyTypesResponse.PropertyType;
 import com.example.android.aqarmaptask.models.propertyTypes.propertyTypesResponse.PropertyTypesResponse;
-import com.example.android.aqarmaptask.models.search.searchResponse.MainPhoto;
 import com.example.android.aqarmaptask.models.search.searchResponse.SearchResponse;
 import com.example.android.aqarmaptask.models.sections.SectionsResponse.SectionsResponse;
 import com.example.android.aqarmaptask.utils.Localization;
@@ -163,13 +163,15 @@ public class MainActivity extends AppCompatActivity {
                 .subscribe(new Observer<SearchResponse>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        loadingProgressBar.setVisibility(View.GONE);
 
                     }
 
                     @Override
                     public void onNext(SearchResponse searchResponse) {
                         loadingProgressBar.setVisibility(View.GONE);
+                        Intent intent = new Intent(MainActivity.this, SearchResultActivity.class);
+                        intent.putExtra("SEARCHRESULT ", searchResponse);
+                        startActivity(intent);
 
                     }
 
