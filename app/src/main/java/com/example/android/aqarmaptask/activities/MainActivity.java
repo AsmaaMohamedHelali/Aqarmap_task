@@ -23,6 +23,8 @@ import com.example.android.aqarmaptask.models.prices.pricesResponse.PriceFilter;
 import com.example.android.aqarmaptask.models.prices.pricesResponse.PricesResponse;
 import com.example.android.aqarmaptask.models.propertyTypes.propertyTypesResponse.PropertyType;
 import com.example.android.aqarmaptask.models.propertyTypes.propertyTypesResponse.PropertyTypesResponse;
+import com.example.android.aqarmaptask.models.search.searchResponse.MainPhoto;
+import com.example.android.aqarmaptask.models.search.searchResponse.SearchResponse;
 import com.example.android.aqarmaptask.models.sections.SectionsResponse.SectionsResponse;
 import com.example.android.aqarmaptask.utils.Localization;
 import com.example.android.aqarmaptask.utils.network.NetworkUtil;
@@ -37,8 +39,10 @@ import butterknife.OnClick;
 import co.ceryle.radiorealbutton.RadioRealButton;
 import co.ceryle.radiorealbutton.RadioRealButtonGroup;
 import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function4;
 import io.reactivex.schedulers.Schedulers;
 import ir.hamsaa.RtlMaterialSpinner;
@@ -153,6 +157,35 @@ public class MainActivity extends AppCompatActivity {
                 ).observeOn(AndroidSchedulers.mainThread()).subscribe(this::handleResults, this::handleError);
     }
     private void callSearchAPI() {
+        MyTask.getInstance().getMyAppService().getSearchResult()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<SearchResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        loadingProgressBar.setVisibility(View.GONE);
+
+                    }
+
+                    @Override
+                    public void onNext(SearchResponse searchResponse) {
+                        loadingProgressBar.setVisibility(View.GONE);
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        loadingProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(MainActivity.this, "ERROR IN GETTING RESPONSE",
+                                Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        loadingProgressBar.setVisibility(View.GONE);
+
+                    }
+                });
     }
 
         private void radioGroupListeners() {
