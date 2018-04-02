@@ -2,4 +2,8 @@
     <string name="app_name">AqarMapTask</string>
     <string name="search">search</string>
     <string name="offline">no internet connection</string>
+    <string name="locationError">choose one location</string>
+    <string name="sectionError">choose one section</string>
+    <string name="propertyTypeError">choose one type</string>
+    <string name="priceError">minimum price should be lower than maximum price</string>
 </resources>

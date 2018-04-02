@@ -25,6 +25,9 @@ public interface MyTaskAPI {
     Observable<PricesResponse> getPriceFilter();
     @GET(Constants.apiURL + "/locations.json")
     Observable<LocationsResponse> getLocations();
+//    @GET(Constants.apiURL + "/search.json")
+//    Observable<LocationsResponse> getSearchResult();
+
 
 
 }

@@ -75,8 +75,16 @@ public class MainActivity extends AppCompatActivity {
     public void refresh(View view) {
         ivNoNetwork.setVisibility(View.GONE);
         setUpUnVisibiliy();
-        checkNetwork();
+        checkNetwork(1);
     }
+    @OnClick(R.id.btn_search)
+    public void search(View view) {
+        if(validate()){
+            loadingProgressBar.setVisibility(View.VISIBLE);
+            checkNetwork(2);
+        }
+    }
+
 
 
     @Override
@@ -86,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         Localization.setLocale(this,"en");
         setUpUnVisibiliy();
-        checkNetwork();
+        checkNetwork(1);
     }
 
     private void setUpUnVisibiliy() {
@@ -101,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void checkNetwork() {
+    private void checkNetwork(int serviceNum) {
         switch (NetworkUtil.getConnectivityStatus(this)) {
             case OFFLINE:
             case WIFI_CONNECTED_WITHOUT_INTERNET:
@@ -111,12 +119,18 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case MOBILE_DATA_CONNECTED:
             case WIFI_CONNECTED_WITH_INTERNET:
-                callallFilterLists();
-                break;
+                switch (serviceNum){
+                    case 1:
+                        callallFilterListsAPI();
+                        break;
+                    case 2:
+                        callSearchAPI();
+                        break;
+                }
         }
     }
 
-    private void callallFilterLists() {
+    private void callallFilterListsAPI() {
         Observable.just(MyTask.getInstance().getMyAppService()).subscribeOn(Schedulers.computation())
                 .flatMap(s -> {
                             Observable<SectionsResponse> sectionsResponseObservable
@@ -138,8 +152,10 @@ public class MainActivity extends AppCompatActivity {
                         }
                 ).observeOn(AndroidSchedulers.mainThread()).subscribe(this::handleResults, this::handleError);
     }
+    private void callSearchAPI() {
+    }
 
-    private void radioGroupListeners() {
+        private void radioGroupListeners() {
         rgSearch.setOnClickedButtonListener(new RadioRealButtonGroup.OnClickedButtonListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
             @Override
@@ -293,6 +309,30 @@ public class MainActivity extends AppCompatActivity {
         Log.e("Observer", "" + t.toString());
         Toast.makeText(this, "ERROR IN GETTING RESPONSE",
                 Toast.LENGTH_LONG).show();
+    }
+
+    private boolean validate() {
+        boolean validate=true;
+        if(spLocations.getSelectedItemPosition()==0){
+            spLocations.setError(getResources().getString(R.string.locationError));
+            validate=false;
+
+        }if(spSections.getSelectedItemPosition()==0){
+            spSections.setError(getResources().getString(R.string.sectionError));
+            validate=false;
+
+        }if(spType.getSelectedItemPosition()==0){
+            spType.setError(getResources().getString(R.string.propertyTypeError));
+            validate=false;
+
+        }if(spMinPrice.getSelectedItemPosition()!=0&&spMaxPrice.getSelectedItemPosition()!=0){
+            if(((PriceFilter)spMinPrice.getSelectedItem()).getValue()>((PriceFilter)spMaxPrice.getSelectedItem()).getValue()){
+                spMinPrice.setError(getResources().getString(R.string.priceError));
+                validate=false;
+            }
+        }
+        return validate;
+
     }
 
     @Override
