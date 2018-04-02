@@ -12,15 +12,15 @@ public class LocationSection implements Parcelable {
     private int id;
     private String title;
     private Boolean searchable;
-    private List<LocationSubSection> subSections = null;
+    private List<LocationSubSection> children = null;
 
     protected LocationSection(Parcel in) {
         id = in.readInt();
         title = in.readString();
         byte tmpSearchable = in.readByte();
         searchable = tmpSearchable == 0 ? null : tmpSearchable == 1;
-        subSections=new ArrayList<LocationSubSection>();
-        in.readList(subSections,null);
+        children=new ArrayList<LocationSubSection>();
+        in.readList(children,null);
 
     }
 
@@ -50,8 +50,8 @@ public class LocationSection implements Parcelable {
 
     public List<LocationSubSection> getSubSections() {
 
-        if (!(subSections == null))
-            return subSections;
+        if (!(children == null))
+            return children;
         else
             return new ArrayList<LocationSubSection>() ;
     }
@@ -67,6 +67,11 @@ public class LocationSection implements Parcelable {
         parcel.writeInt(id);
         parcel.writeString(title);
         parcel.writeByte((byte) (searchable == null ? 0 : searchable ? 1 : 2));
-        parcel.writeList(subSections);
+        parcel.writeList(children);
+    }
+
+    @Override
+    public String toString() {
+        return title;
     }
 }

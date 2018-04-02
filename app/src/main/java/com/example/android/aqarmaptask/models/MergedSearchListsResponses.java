@@ -33,4 +33,12 @@ public class MergedSearchListsResponses {
     public LocationsResponse getLocationsResponse() {
         return locationsResponse;
     }
+
+    public PricesResponse getPricesResponse() {
+        return pricesResponse;
+    }
+
+    public PropertyTypesResponse getPropertyTypesResponse() {
+        return propertyTypesResponse;
+    }
 }

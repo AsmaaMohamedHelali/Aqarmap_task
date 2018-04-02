@@ -47,4 +47,9 @@ public class PriceFilter implements Parcelable {
         parcel.writeInt(value);
         parcel.writeParcelable(section, i);
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
+    }
 }

@@ -7,19 +7,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.android.aqarmaptask.R;
 import com.example.android.aqarmaptask.models.MergedSearchListsResponses;
+import com.example.android.aqarmaptask.models.locations.locationsResponse.Location;
+import com.example.android.aqarmaptask.models.locations.locationsResponse.LocationSection;
 import com.example.android.aqarmaptask.models.locations.locationsResponse.LocationsResponse;
+import com.example.android.aqarmaptask.models.prices.pricesResponse.PriceFilter;
 import com.example.android.aqarmaptask.models.prices.pricesResponse.PricesResponse;
+import com.example.android.aqarmaptask.models.propertyTypes.propertyTypesResponse.PropertyType;
 import com.example.android.aqarmaptask.models.propertyTypes.propertyTypesResponse.PropertyTypesResponse;
 import com.example.android.aqarmaptask.models.sections.SectionsResponse.SectionsResponse;
 import com.example.android.aqarmaptask.utils.network.NetworkUtil;
 import com.example.android.aqarmaptask.utils.webservice.MyTask;
-import com.isapanah.awesomespinner.AwesomeSpinner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,6 +38,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Function4;
 import io.reactivex.schedulers.Schedulers;
+import ir.hamsaa.RtlMaterialSpinner;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -41,21 +50,22 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.btn_search)
     Button btnSearch;
     @BindView(R.id.sp_locations)
-    AwesomeSpinner spLocations;
+    RtlMaterialSpinner spLocations;
     @BindView(R.id.sp_sections)
-    AwesomeSpinner spSections;
+    RtlMaterialSpinner spSections;
     @BindView(R.id.sp_type)
-    AwesomeSpinner spType;
+    RtlMaterialSpinner spType;
     @BindView(R.id.sp_maxPrices)
-    AwesomeSpinner spMaxPrice;
+    RtlMaterialSpinner spMaxPrice;
     @BindView(R.id.sp_minPrices)
-    AwesomeSpinner spMinPrice;
+    RtlMaterialSpinner spMinPrice;
     @BindView(R.id.rg_search)
     RadioRealButtonGroup rgSearch;
     @BindView(R.id.rb_rent)
     RadioRealButton rbRent;
     @BindView(R.id.rb_sale)
     RadioRealButton rbSale;
+    List<PriceFilter> rentPrices, salePrices;
 
 
     @Override
@@ -63,28 +73,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        radioGroupListeners();
         loadingProgressBar.setVisibility(View.VISIBLE);
         checkNetwork();
     }
-    private void radioGroupListeners(){
-        rgSearch.setOnClickedButtonListener(new RadioRealButtonGroup.OnClickedButtonListener() {
-            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-            @Override
-            public void onClickedButton(RadioRealButton button, int position) {
-                Toast.makeText(MainActivity.this, "Clicked! Position: " + button.getLabelFor(), Toast.LENGTH_SHORT).show();
-            }
-        });
 
-// onPositionChanged listener detects if there is any change in position
-        rgSearch.setOnPositionChangedListener(new RadioRealButtonGroup.OnPositionChangedListener() {
-
-            @Override
-            public void onPositionChanged(RadioRealButton button, int currentPosition, int lastPosition) {
-                Toast.makeText(MainActivity.this, "Position Changed! Position: " + currentPosition, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
     private void checkNetwork() {
         switch (NetworkUtil.getConnectivityStatus(this)) {
@@ -126,19 +118,152 @@ public class MainActivity extends AppCompatActivity {
                 ).observeOn(AndroidSchedulers.mainThread()).subscribe(this::handleResults, this::handleError);
     }
 
+    private void radioGroupListeners() {
+        rgSearch.setOnClickedButtonListener(new RadioRealButtonGroup.OnClickedButtonListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+            @Override
+            public void onClickedButton(RadioRealButton button, int position) {
+                Toast.makeText(MainActivity.this, "Clicked! Position: " + button.getLabelFor(), Toast.LENGTH_SHORT).show();
+                if (position == 1) {
+                    if (rentPrices != null)
+                        setPricesListSpinner(rentPrices);
+
+                } else {
+                    if (salePrices != null)
+                        setPricesListSpinner(salePrices);
+                }
+            }
+        });
+
+    }
+
+    private void setLocationListSpinner(List<Location> locationListSpinner) {
+        ArrayAdapter<Location> locationArrayAdapter = new ArrayAdapter<Location>(this, android.R.layout.simple_spinner_item, locationListSpinner);
+        spLocations.setAdapter(locationArrayAdapter);
+        spLocations.setSelection(1);
+        spLocations.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Location selectedLocation = (Location) adapterView.getSelectedItem();
+                setSectionListSpinner(selectedLocation.getId(), locationListSpinner);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private void setSectionListSpinner(int locationId, List<Location> locationListSpinner) {
+        List<LocationSection> locationSections = null;
+        for (int i = 0; i < locationListSpinner.size(); i++) {
+            if (locationListSpinner.get(i).getId() == locationId) {
+                locationSections = locationListSpinner.get(i).getSections();
+                break;
+            }
+        }
+        if (locationSections != null) {
+            ArrayAdapter<LocationSection> locationArrayAdapter = new ArrayAdapter<LocationSection>(this, android.R.layout.simple_spinner_item, locationSections);
+            spSections.setAdapter(locationArrayAdapter);
+            spSections.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+        }
+    }
+
+    public void setPropertyTypeListSpinner(List<PropertyType> propertyTypeListSpinner) {
+        ArrayAdapter<PropertyType> locationArrayAdapter = new ArrayAdapter<PropertyType>(this, android.R.layout.simple_spinner_item, propertyTypeListSpinner);
+        spType.setAdapter(locationArrayAdapter);
+        spType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private void setPricesListSpinner(List<PriceFilter> priceFilter) {
+        ArrayAdapter<PriceFilter> priceFilterArrayAdapter = new ArrayAdapter<PriceFilter>(this, android.R.layout.simple_spinner_item, priceFilter);
+        spMinPrice.setAdapter(priceFilterArrayAdapter);
+        spMinPrice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        spMaxPrice.setAdapter(priceFilterArrayAdapter);
+        spMaxPrice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void handleResults(MergedSearchListsResponses mergedSearchListsResponses) {
         loadingProgressBar.setVisibility(View.GONE);
         if (mergedSearchListsResponses.getSectionsResponse() != null) {
-            if(mergedSearchListsResponses.getSectionsResponse().getSections().size()>=2) {
+            if (mergedSearchListsResponses.getSectionsResponse().getSections().size() >= 2) {
                 rbRent.setText(mergedSearchListsResponses.getSectionsResponse().getSections().get(0).getTitle());
                 rbRent.setLabelFor(mergedSearchListsResponses.getSectionsResponse().getSections().get(0).getId());
                 rbSale.setText(mergedSearchListsResponses.getSectionsResponse().getSections().get(1).getTitle());
                 rbSale.setLabelFor(mergedSearchListsResponses.getSectionsResponse().getSections().get(1).getId());
+                if (mergedSearchListsResponses.getPricesResponse().getPriceFilters() != null) {
+                    rentPrices = dividingPrices(mergedSearchListsResponses.getSectionsResponse().getSections().get(0).getId()
+                            , mergedSearchListsResponses.getPricesResponse().getPriceFilters());
+                    salePrices = dividingPrices(mergedSearchListsResponses.getSectionsResponse().getSections().get(1).getId()
+                            , mergedSearchListsResponses.getPricesResponse().getPriceFilters());
+
+                }
+                if (rentPrices != null)
+                    setPricesListSpinner(rentPrices);
+
             }
-        } else {
-            Toast.makeText(this, "errorrrrrrrrrrrr", Toast.LENGTH_SHORT).show();
         }
+        if (mergedSearchListsResponses.getLocationsResponse() != null) {
+            if (mergedSearchListsResponses.getLocationsResponse().getLocations().size() > 0) {
+                setLocationListSpinner(mergedSearchListsResponses.getLocationsResponse().getLocations());
+            }
+
+        }
+        if (mergedSearchListsResponses.getPropertyTypesResponse() != null) {
+            if (mergedSearchListsResponses.getPropertyTypesResponse().getPropertyTypes().size() > 0)
+                setPropertyTypeListSpinner(mergedSearchListsResponses.getPropertyTypesResponse().getPropertyTypes());
+        }
+        radioGroupListeners();
+
+    }
+
+    private List<PriceFilter> dividingPrices(int id, List<PriceFilter> pricesFilter) {
+        List<PriceFilter> dividedPrices = new ArrayList<PriceFilter>();
+        for (int i = 0; i < pricesFilter.size(); i++) {
+            if (pricesFilter.get(i).getSection().getId() == id) {
+                dividedPrices.add(pricesFilter.get(i));
+            }
+        }
+        return dividedPrices;
     }
 
 
@@ -157,4 +282,6 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onDestroy();
     }
+
+
 }

@@ -47,4 +47,9 @@ public class PropertyType implements Parcelable {
         parcel.writeInt(id);
         parcel.writeString(title);
     }
+
+    @Override
+    public String toString() {
+        return title;
+    }
 }

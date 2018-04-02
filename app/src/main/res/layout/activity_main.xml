@@ -35,6 +35,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:rrb_ripple="true"
+                    app:rrb_checked="true"
                     app:rrb_rippleColor="@color/black"
                     app:rrb_text="Rent"
                     app:rrb_textColor="@color/black" />
@@ -49,40 +50,35 @@
                     app:rrb_textColor="@color/black" />
             </co.ceryle.radiorealbutton.RadioRealButtonGroup>
 
-            <com.isapanah.awesomespinner.AwesomeSpinner
+            <ir.hamsaa.RtlMaterialSpinner
                 android:id="@+id/sp_locations"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:spinnerDirection="ltr"
-                app:spinnerHint="Select Location" />
+                app:ms_hint="Select Location" />
 
-            <com.isapanah.awesomespinner.AwesomeSpinner
+            <ir.hamsaa.RtlMaterialSpinner
                 android:id="@+id/sp_sections"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:spinnerDirection="ltr"
-                app:spinnerHint="Select Section" />
+                app:ms_hint="Select Section" />
 
-            <com.isapanah.awesomespinner.AwesomeSpinner
+            <ir.hamsaa.RtlMaterialSpinner
                 android:id="@+id/sp_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:spinnerDirection="ltr"
-                app:spinnerHint="Select Type" />
+                app:ms_hint="Select Type" />
 
-            <com.isapanah.awesomespinner.AwesomeSpinner
+            <ir.hamsaa.RtlMaterialSpinner
                 android:id="@+id/sp_minPrices"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:spinnerDirection="ltr"
-                app:spinnerHint="Low price" />
+                app:ms_hint="Minimum price" />
 
-            <com.isapanah.awesomespinner.AwesomeSpinner
+            <ir.hamsaa.RtlMaterialSpinner
                 android:id="@+id/sp_maxPrices"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:spinnerDirection="ltr"
-                app:spinnerHint="Max price" />
+                app:ms_hint="Maximum price" />
 
         </LinearLayout>
 
