@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.android.aqarmaptask.R;
@@ -32,6 +33,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import co.ceryle.radiorealbutton.RadioRealButton;
 import co.ceryle.radiorealbutton.RadioRealButtonGroup;
 import io.reactivex.Observable;
@@ -66,7 +68,15 @@ public class MainActivity extends AppCompatActivity {
     RadioRealButton rbRent;
     @BindView(R.id.rb_sale)
     RadioRealButton rbSale;
+    @BindView(R.id.ll_search)
+    LinearLayout llSearch;
     List<PriceFilter> rentPrices, salePrices;
+    @OnClick(R.id.iv_no_network)
+    public void refresh(View view) {
+        ivNoNetwork.setVisibility(View.GONE);
+        setUpUnVisibiliy();
+        checkNetwork();
+    }
 
 
     @Override
@@ -75,19 +85,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         Localization.setLocale(this,"en");
-        loadingProgressBar.setVisibility(View.VISIBLE);
+        setUpUnVisibiliy();
         checkNetwork();
+    }
+
+    private void setUpUnVisibiliy() {
+        llSearch.setVisibility(View.GONE);
+        loadingProgressBar.setVisibility(View.VISIBLE);
+        btnSearch.setVisibility(View.GONE);
+    }
+    private void setUpVisibiliy() {
+        llSearch.setVisibility(View.VISIBLE);
+        loadingProgressBar.setVisibility(View.GONE);
+        btnSearch.setVisibility(View.VISIBLE);
     }
 
 
     private void checkNetwork() {
         switch (NetworkUtil.getConnectivityStatus(this)) {
             case OFFLINE:
-                loadingProgressBar.setVisibility(View.GONE);
-                Toast.makeText(this, getString(R.string.offline), Toast.LENGTH_SHORT).show();
-                break;
             case WIFI_CONNECTED_WITHOUT_INTERNET:
                 loadingProgressBar.setVisibility(View.GONE);
+                ivNoNetwork.setVisibility(View.VISIBLE);
                 Toast.makeText(this, getString(R.string.offline), Toast.LENGTH_SHORT).show();
                 break;
             case MOBILE_DATA_CONNECTED:
@@ -225,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void handleResults(MergedSearchListsResponses mergedSearchListsResponses) {
-        loadingProgressBar.setVisibility(View.GONE);
+        setUpVisibiliy();
         if (mergedSearchListsResponses.getSectionsResponse() != null) {
             if (mergedSearchListsResponses.getSectionsResponse().getSections().size() >= 2) {
                 rbRent.setText(mergedSearchListsResponses.getSectionsResponse().getSections().get(0).getTitle());
