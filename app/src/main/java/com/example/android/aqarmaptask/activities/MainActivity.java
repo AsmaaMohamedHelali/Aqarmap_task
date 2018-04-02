@@ -23,6 +23,7 @@ import com.example.android.aqarmaptask.models.prices.pricesResponse.PricesRespon
 import com.example.android.aqarmaptask.models.propertyTypes.propertyTypesResponse.PropertyType;
 import com.example.android.aqarmaptask.models.propertyTypes.propertyTypesResponse.PropertyTypesResponse;
 import com.example.android.aqarmaptask.models.sections.SectionsResponse.SectionsResponse;
+import com.example.android.aqarmaptask.utils.Localization;
 import com.example.android.aqarmaptask.utils.network.NetworkUtil;
 import com.example.android.aqarmaptask.utils.webservice.MyTask;
 
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        Localization.setLocale(this,"en");
         loadingProgressBar.setVisibility(View.VISIBLE);
         checkNetwork();
     }
