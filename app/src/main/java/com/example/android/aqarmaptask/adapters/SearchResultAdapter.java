@@ -16,39 +16,34 @@
 package com.example.android.aqarmaptask.adapters;
 
 import android.content.Context;
-import android.support.v4.graphics.ColorUtils;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.aqarmaptask.R;
+import com.example.android.aqarmaptask.activities.ItemDetailsActivity;
+import com.example.android.aqarmaptask.activities.MainActivity;
+import com.example.android.aqarmaptask.activities.SearchResultActivity;
 import com.example.android.aqarmaptask.models.search.searchResponse.SearchResponse;
+import com.squareup.picasso.Picasso;
 
-/**
- * We couldn't come up with a good name for this class. Then, we realized
- * that this lesson is about RecyclerView.
- *
- * RecyclerView... Recycling... Saving the planet? Being green? Anyone?
- * #crickets
- *
- * Avoid unnecessary garbage collection by using RecyclerView and ViewHolders.
- *
- * If you don't like our puns, we named this Adapter GreenAdapter because its
- * contents are green.
- */
 public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapter.NumberViewHolder> {
 
-    private static int viewHolderCount;
 
     private SearchResponse searchResponse;
+    private Context context;
 
 
-    public SearchResultAdapter(SearchResponse searchResponse) {
-       this.searchResponse=searchResponse;
+    public SearchResultAdapter(SearchResponse searchResponse,Context context) {
+        this.searchResponse = searchResponse;
+        this.context=context;
     }
 
 
@@ -66,54 +61,53 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         return viewHolder;
     }
 
-    /**
-     * OnBindViewHolder is called by the RecyclerView to display the data at the specified
-     * position. In this method, we update the contents of the ViewHolder to display the correct
-     * indices in the list for this particular position, using the "position" argument that is conveniently
-     * passed into us.
-     *
-     * @param holder   The ViewHolder which should be updated to represent the contents of the
-     *                 item at the given position in the data set.
-     * @param position The position of the item within the adapter's data set.
-     */
     @Override
     public void onBindViewHolder(NumberViewHolder holder, int position) {
-        holder.bind(position);
+        holder.itemTitle.setText(searchResponse.getListings().getItems().get(position).getTitle());
+        holder.itemPrice.setText(searchResponse.getListings().getItems().get(position).getPrice()+"");
+        holder.itemAddress.setText(searchResponse.getListings().getItems().get(position).getAddress());
+        Picasso.with(context).load(searchResponse.getListings().getItems().get(position)
+                .getMainPhoto().getFile().getThumbnails().getLarge())
+                .placeholder(R.drawable.placeholder)
+                .into(holder.itemImage);
+        holder.cvResult.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, ItemDetailsActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("SEARCHRESULT", searchResponse);
+                intent.putExtra("bundle", bundle);
+                context.startActivity(intent);
+            }
+        });
     }
 
-    /**
-     * This method simply returns the number of items to display. It is used behind the scenes
-     * to help layout our Views and for animations.
-     *
-     * @return The number of items available
-     */
+
     @Override
     public int getItemCount() {
-        return searchResponse.getListings().getTotalCount();
+        if(searchResponse.getListings().getItems()!=null){
+            return searchResponse.getListings().getItems().size();
+        }
+        return 0;
     }
 
-    // COMPLETED (5) Implement OnClickListener in the NumberViewHolder class
-    /**
-     * Cache of the children views for a list item.
-     */
+
     class NumberViewHolder extends RecyclerView.ViewHolder {
 
-        // Will display the position in the list, ie 0 through getItemCount() - 1
-        TextView listItemNumberView;
-        // Will display which ViewHolder is displaying this data
-        TextView viewHolderIndex;
+        TextView itemTitle, itemPrice, itemAddress;
+        ImageView itemImage;
+        CardView cvResult;
 
         public NumberViewHolder(View itemView) {
             super(itemView);
 
-            listItemNumberView = (TextView) itemView.findViewById(R.id.tv_item_number);
-            viewHolderIndex = (TextView) itemView.findViewById(R.id.tv_view_holder_instance);
+            itemTitle = (TextView) itemView.findViewById(R.id.item_title);
+            itemPrice = (TextView) itemView.findViewById(R.id.item_price);
+            itemAddress = (TextView) itemView.findViewById(R.id.item_address);
+            itemImage = (ImageView) itemView.findViewById(R.id.item_image);
+            cvResult = (CardView) itemView.findViewById(R.id.card_view);
         }
 
-
-        void bind(int listIndex) {
-            listItemNumberView.setText(String.valueOf(listIndex));
-        }
 
     }
 }

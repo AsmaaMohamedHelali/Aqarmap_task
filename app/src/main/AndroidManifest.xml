@@ -22,14 +22,11 @@
         </activity>
         <activity
             android:name=".activities.SearchResultActivity"
-            android:label="@string/title_activity_search_result"
-            android:parentActivityName=".activities.MainActivity" >
-            <!-- The meta-data element is needed for versions lower than 4.1 -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity" />
-        </activity>
+            android:label="@string/title_activity_search_result" />
+        <activity
+            android:name=".activities.ItemDetailsActivity"
 
+            android:label="@string/title_activity_details" />
     </application>
 
 </manifest>

@@ -5,7 +5,9 @@ package com.example.android.aqarmaptask.models.search.searchResponse;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Attribute implements Parcelable {
+import java.io.Serializable;
+
+public class Attribute implements Serializable{
 
     private int id;
     private Object listing;
@@ -13,30 +15,10 @@ public class Attribute implements Parcelable {
     private String value;
 
 
-    protected Attribute(Parcel in) {
-        id = in.readInt();
-        value = in.readString();
-        custom_field=in.readParcelable(CustomField.class.getClassLoader());
-    }
 
-    public static final Creator<Attribute> CREATOR = new Creator<Attribute>() {
-        @Override
-        public Attribute createFromParcel(Parcel in) {
-            return new Attribute(in);
-        }
-
-        @Override
-        public Attribute[] newArray(int size) {
-            return new Attribute[size];
-        }
-    };
 
     public int getId() {
         return id;
-    }
-
-    public Object getListing() {
-        return listing;
     }
 
     public CustomField getCustom_field() {
@@ -47,15 +29,5 @@ public class Attribute implements Parcelable {
         return value;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(id);
-        parcel.writeString(value);
-        parcel.writeParcelable(custom_field,i);
-    }
 }

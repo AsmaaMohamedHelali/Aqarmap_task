@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.android.aqarmaptask.R;
@@ -13,6 +12,7 @@ import com.example.android.aqarmaptask.adapters.SearchResultAdapter;
 import com.example.android.aqarmaptask.models.search.searchResponse.SearchResponse;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class SearchResultActivity extends AppCompatActivity {
     private SearchResponse searchResponse;
@@ -24,6 +24,7 @@ public class SearchResultActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
+        ButterKnife.bind(this);
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getDataFromIntent();
         initRecyclerView();
@@ -43,19 +44,24 @@ public class SearchResultActivity extends AppCompatActivity {
         /*
          * The GreenAdapter is responsible for displaying each item in the list.
          */
-        searchResultAdapter = new SearchResultAdapter(searchResponse);
+        searchResultAdapter = new SearchResultAdapter(searchResponse, this);
         rvResults.setAdapter(searchResultAdapter);
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-            if (item.getItemId() == android.R.id.home) {
-                NavUtils.navigateUpFromSameTask(this);            }
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
 
-            return super.onOptionsItemSelected(item);
-          }
+        return super.onOptionsItemSelected(item);
+    }
 
     public void getDataFromIntent() {
-       searchResponse = getIntent().getExtras().getParcelable("SEARCHRESULT");    }
+        Bundle bundle = getIntent().getBundleExtra("bundle");
+        if (bundle != null) {
+            searchResponse = (SearchResponse) bundle.getSerializable("SEARCHRESULT");
+        }
+    }
 }

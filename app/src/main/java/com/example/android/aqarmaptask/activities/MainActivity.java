@@ -75,20 +75,21 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.ll_search)
     LinearLayout llSearch;
     List<PriceFilter> rentPrices, salePrices;
+
     @OnClick(R.id.iv_no_network)
     public void refresh(View view) {
         ivNoNetwork.setVisibility(View.GONE);
         setUpUnVisibiliy();
         checkNetwork(1);
     }
+
     @OnClick(R.id.btn_search)
     public void search(View view) {
-        if(validate()){
+        if (validate()) {
             loadingProgressBar.setVisibility(View.VISIBLE);
             checkNetwork(2);
         }
     }
-
 
 
     @Override
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        Localization.setLocale(this,"en");
+        Localization.setLocale(this, "en");
         setUpUnVisibiliy();
         checkNetwork(1);
     }
@@ -106,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         loadingProgressBar.setVisibility(View.VISIBLE);
         btnSearch.setVisibility(View.GONE);
     }
+
     private void setUpVisibiliy() {
         llSearch.setVisibility(View.VISIBLE);
         loadingProgressBar.setVisibility(View.GONE);
@@ -123,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case MOBILE_DATA_CONNECTED:
             case WIFI_CONNECTED_WITH_INTERNET:
-                switch (serviceNum){
+                switch (serviceNum) {
                     case 1:
                         callallFilterListsAPI();
                         break;
@@ -156,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                 ).observeOn(AndroidSchedulers.mainThread()).subscribe(this::handleResults, this::handleError);
     }
+
     private void callSearchAPI() {
         MyTask.getInstance().getMyAppService().getSearchResult()
                 .subscribeOn(Schedulers.io())
@@ -170,7 +173,9 @@ public class MainActivity extends AppCompatActivity {
                     public void onNext(SearchResponse searchResponse) {
                         loadingProgressBar.setVisibility(View.GONE);
                         Intent intent = new Intent(MainActivity.this, SearchResultActivity.class);
-                        intent.putExtra("SEARCHRESULT ", searchResponse);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("SEARCHRESULT", searchResponse);
+                        intent.putExtra("bundle", bundle);
                         startActivity(intent);
 
                     }
@@ -190,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-        private void radioGroupListeners() {
+    private void radioGroupListeners() {
         rgSearch.setOnClickedButtonListener(new RadioRealButtonGroup.OnClickedButtonListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
             @Override
@@ -347,23 +352,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean validate() {
-        boolean validate=true;
-        if(spLocations.getSelectedItemPosition()==0){
+        boolean validate = true;
+        if (spLocations.getSelectedItemPosition() == 0) {
             spLocations.setError(getResources().getString(R.string.locationError));
-            validate=false;
+            validate = false;
 
-        }if(spSections.getSelectedItemPosition()==0){
+        }
+        if (spSections.getSelectedItemPosition() == 0) {
             spSections.setError(getResources().getString(R.string.sectionError));
-            validate=false;
+            validate = false;
 
-        }if(spType.getSelectedItemPosition()==0){
+        }
+        if (spType.getSelectedItemPosition() == 0) {
             spType.setError(getResources().getString(R.string.propertyTypeError));
-            validate=false;
+            validate = false;
 
-        }if(spMinPrice.getSelectedItemPosition()!=0&&spMaxPrice.getSelectedItemPosition()!=0){
-            if(((PriceFilter)spMinPrice.getSelectedItem()).getValue()>((PriceFilter)spMaxPrice.getSelectedItem()).getValue()){
+        }
+        if (spMinPrice.getSelectedItemPosition() != 0 && spMaxPrice.getSelectedItemPosition() != 0) {
+            if (((PriceFilter) spMinPrice.getSelectedItem()).getValue() > ((PriceFilter) spMaxPrice.getSelectedItem()).getValue()) {
                 spMinPrice.setError(getResources().getString(R.string.priceError));
-                validate=false;
+                validate = false;
             }
         }
         return validate;
