@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2016 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,58 +13,55 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/card_view"
     android:layout_margin="5dp"
+    android:clickable="true"
+    android:foreground="?selectableItemBackground"
     card_view:cardBackgroundColor="#f9f9f9"
     card_view:cardCornerRadius="12dp"
     card_view:cardElevation="3dp"
-    card_view:contentPadding="4dp"
-    android:foreground="?selectableItemBackground"
-    android:clickable="true" >
+    card_view:contentPadding="4dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp" >
+        android:padding="16dp">
 
         <ImageView
+            android:id="@+id/item_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:id="@+id/item_image"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_marginRight="16dp"
-            />
+            android:layout_marginLeft="16dp" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/item_title"
-            android:layout_toRightOf="@+id/item_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:textSize="@dimen/text_size"
-            />
+            android:layout_toLeftOf="@+id/item_image"
+            android:textSize="@dimen/text_size" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/item_price"
-            android:textSize="@dimen/text_size"
-            android:layout_toRightOf="@+id/item_image"
-            android:layout_below="@+id/item_title"
-            />
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/item_title"
+            android:layout_toLeftOf="@+id/item_image"
+            android:textSize="@dimen/text_size" />
+
+        <TextView
             android:id="@+id/item_address"
-            android:textSize="@dimen/text_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/item_image"
-            />
+            android:layout_alignParentRight="true"
+            android:textSize="@dimen/text_size" />
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>
