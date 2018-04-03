@@ -75,7 +75,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             public void onClick(View view) {
                 Intent intent = new Intent(context, ItemDetailsActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("SEARCHRESULT", searchResponse);
+                bundle.putSerializable("ITEMDetails", searchResponse.getListings().getItems().get(position));
                 intent.putExtra("bundle", bundle);
                 context.startActivity(intent);
             }
